@@ -46,7 +46,7 @@ class Crawler:
     
     return None
   
-  # Perform crawl using breadth-first search
+  # Perform crawl using linear pagination.
   def crawl(self, save_path: str | None = None) -> dict[str, str]:
     queue = [self.base_url]
     while queue:
@@ -62,6 +62,7 @@ class Crawler:
         self.visited.add(url)
         continue
 
+      self.visited.add(url)
       soup = BeautifulSoup(response.text, "html.parser")
       text = self._extract_text(soup)
       self.pages[url] = text
