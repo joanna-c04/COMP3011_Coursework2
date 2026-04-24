@@ -260,6 +260,17 @@ class TestCrawl(unittest.TestCase):
     # Should complete without any file IO errors
     pages = self.crawler.crawl(save_path = None)
     self.assertEqual(len(pages), 1)
+
+  @patch("crawler.requests.get")
+  @patch("builtins.open", side_effect = OSError("Permission denied"))
+  def test_save_error_handled_gracefully(self, mock_open, mock_get):
+    mock_get.return_value = make_mock_response(
+      self._make_page("A quote", "An author", has_next = False)
+    )
+    # Should complete without crashing despite save error
+    pages = self.crawler.crawl(save_path="/invalid/path/pages.json")
+    # Page was still fetched and stored in memory
+    self.assertEqual(len(pages), 1)
  
  
 if __name__ == "__main__":

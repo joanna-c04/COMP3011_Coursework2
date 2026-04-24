@@ -69,9 +69,12 @@ class Crawler:
 
       # Save to json file after each page
       if save_path:
-        with open(save_path, "w", encoding = "utf-8") as f:
-          json.dump(self.pages, f, indent = 2)
-        print(f"Saved {len(self.pages)} pages to {save_path}")
+        try:
+          with open(save_path, "w", encoding = "utf-8") as f:
+            json.dump(self.pages, f, indent = 2)
+          print(f"Saved {len(self.pages)} pages to {save_path}")
+        except OSError as e:
+          print(f"[Error] Could not save to {save_path}: {e}")
 
       # Get next links and add to queue
       next_url = self._extract_links(soup, url)
